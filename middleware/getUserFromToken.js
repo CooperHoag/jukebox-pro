@@ -7,12 +7,16 @@ export default async function getUserFromToken(req, res, next) {
   if (!authorization || !authorization.startsWith("Bearer ")) return next();
 
   const token = authorization.split(" ")[1];
+  console.log("auth header:", authorization); // Debug log
+
   try {
-    const { id } = verifyToken(token);
-    const user = await getUserById(id);
+    const { userId } = verifyToken(token);
+    const user = await getUserById(userId);
     req.user = user;
+    console.log("user attached:", req.user); // Debug log
     next();
-  } catch {
+  } catch (err) {
     res.status(401).send("Invalid token.");
   }
 }
+
